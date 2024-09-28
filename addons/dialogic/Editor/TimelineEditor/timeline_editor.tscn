@@ -72,6 +72,18 @@ This is what you should use in a jump event to reference this timeline.
 
 You can also use this name in Dialogic.start()."
 
+[node name="SelectIndex" type="Button" parent="VBox/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+text = "Select Event at Index"
+
+[node name="EventIndex" type="SpinBox" parent="VBox/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
 [node name="SwitchEditorMode" type="Button" parent="VBox/HBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 0)
