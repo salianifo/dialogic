@@ -162,6 +162,23 @@ func _ready() -> void:
 	%SwitchEditorMode.icon = get_theme_icon("ArrowRight", "EditorIcons")
 	%SwitchEditorMode.pressed.connect(toggle_editor_mode)
 	%SwitchEditorMode.custom_minimum_size.x = 200 * DialogicUtil.get_editor_scale()
+	
+	%SelectIndex.pressed.connect(func() -> void:
+		if current_editor_mode == EditorMode.VISUAL:
+			%VisualEditor.scroll_to_piece(%EventIndex.value)
+			%VisualEditor.deselect_all_items()
+			%VisualEditor.select_events_indexed({%EventIndex.value:true})
+			%VisualEditor.visual_update_selection()
+		else:
+			%TextEditor.set_caret_line(%EventIndex.value)
+		)
+	
+	%VisualEditor.get_node("%Timeline").child_order_changed.connect(func() -> void:
+		%EventIndex.max_value = %VisualEditor.get_node("%Timeline").get_child_count() - 1
+		)
+	%TextEditor.text_changed.connect(func () -> void:
+		%EventIndex.max_value = %TextEditor.get_line_count() - 1
+		)
 
 	%SearchClose.icon = get_theme_icon("Close", "EditorIcons")
 	%SearchUp.icon = get_theme_icon("MoveUp", "EditorIcons")
