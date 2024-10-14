@@ -164,6 +164,8 @@ func _execute() -> void:
 		else:
 			await advance
 
+	if dialogic.has_subsystem('Voice'):
+		dialogic.Voice.stop_audio()
 
 	finish()
 
