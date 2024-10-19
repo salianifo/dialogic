@@ -18,6 +18,8 @@ var text := ""
 var character: DialogicCharacter = null
 ## If a character is set, this setting can change the portrait of that character.
 var portrait := ""
+## Automatically hides textbox before advancing to next event.
+var hide_text := false
 
 ### Helpers
 
@@ -169,6 +171,10 @@ func _execute() -> void:
 
 	if dialogic.has_subsystem('Voice'):
 		dialogic.Voice.stop_audio()
+
+	if hide_text:
+		dialogic.Text.update_dialog_text('', true)
+		dialogic.Text.hide_textbox()
 
 	finish()
 
@@ -333,6 +339,7 @@ func get_shortcode_parameters() -> Dictionary:
 		#param_name 	: property_info
 		"character"		: {"property": "character_identifier", "default": ""},
 		"portrait"		: {"property": "portrait", 					"default": ""},
+		"hide_text"		: {"property": "hide_text", "default": false}
 	}
 #endregion
 
@@ -375,6 +382,8 @@ func build_event_editor() -> void:
 			'collapse_when_empty': true,},
 			'should_show_portrait_selector()')
 	add_body_edit('text', ValueType.MULTILINE_TEXT, {'autofocus':true})
+	add_body_line_break()
+	add_body_edit('hide_text', ValueType.BOOL, {'left_text': 'Hide text box:'})
 
 
 func should_show_portrait_selector() -> bool:
