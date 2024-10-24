@@ -315,7 +315,6 @@ func _on_event_block_gui_input(event: InputEvent, item: Node) -> void:
 	if len(selected_items) > 0 and event is InputEventMouseMotion:
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			if !%TimelineArea.dragging and !get_viewport().gui_is_dragging() and drag_allowed:
-				prints("_on_event_block_gui_input", "mouse_motion")
 				sort_selection()
 				%TimelineArea.start_dragging(%TimelineArea.DragTypes.EXISTING_EVENTS, selected_items)
 
@@ -330,7 +329,6 @@ func _on_timeline_area_drag_completed(type:int, index:int, data:Variant) -> void
 
 	elif type == %TimelineArea.DragTypes.EXISTING_EVENTS:
 		if not (len(data) == 1 and data[0].get_index()+1 == index):
-			prints("move_blocks_to_index", data, index)
 			move_blocks_to_index(data, index)
 
 	await get_tree().process_frame
