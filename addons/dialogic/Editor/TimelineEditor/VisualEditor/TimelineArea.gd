@@ -47,6 +47,8 @@ func _process(delta:float) -> void:
 	if !dragging:
 		return
 
+	print("_process")
+
 	for child in %Timeline.get_children():
 		if (child.global_position.y < get_global_mouse_position().y) and \
 			(child.global_position.y+child.size.y > get_global_mouse_position().y):
@@ -61,6 +63,7 @@ func _process(delta:float) -> void:
 
 func finish_dragging() -> void:
 	dragging = false
+	prints("finish_dragging", drag_type, drag_to_position, drag_data, get_global_mouse_position(), get_global_rect())
 	if get_global_rect().has_point(get_global_mouse_position()):
 		drag_completed.emit(drag_type, drag_to_position, drag_data)
 	else:
