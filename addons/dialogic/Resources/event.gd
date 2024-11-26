@@ -466,6 +466,7 @@ func get_event_editor_info() -> Array:
 		else:
 			editor_list = []
 
+		add_header_label(event_name)
 		build_event_editor()
 		return editor_list
 	else:

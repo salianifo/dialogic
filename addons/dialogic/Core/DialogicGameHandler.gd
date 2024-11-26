@@ -92,6 +92,10 @@ signal signal_event(argument: Variant)
 signal text_signal(argument: String)
 
 
+## Holds preloaded portraits
+var preloaded_portraits: Dictionary = {}
+
+
 # Careful, this section is repopulated automatically at certain moments.
 #region SUBSYSTEMS
 
@@ -214,6 +218,37 @@ func start_timeline(timeline:Variant, label_or_idx:Variant = "") -> void:
 	for event in current_timeline_events:
 		event.dialogic = self
 	current_event_idx = -1
+
+	var new_portraits := {}
+
+	for event in current_timeline_events:
+		var character: DialogicCharacter
+		var portrait := ""
+
+		if event is DialogicCharacterEvent and event.action != DialogicCharacterEvent.Actions.LEAVE:
+			character = event.character
+			portrait = event.portrait
+		elif event is DialogicTextEvent:
+			character = event.character
+			portrait = event.portrait
+
+		if character:
+			if portrait.is_empty():
+				portrait = character.default_portrait
+
+			if portrait in character.portraits:
+				var scene_path: String = character.portraits[portrait].get('scene', '')
+
+				if scene_path.is_empty():
+					continue
+
+				if scene_path in preloaded_portraits:
+					new_portraits[scene_path] = preloaded_portraits[scene_path]
+				else:
+					new_portraits[scene_path] = load(scene_path) as PackedScene
+
+	preloaded_portraits.clear()
+	preloaded_portraits = new_portraits
 
 	if typeof(label_or_idx) == TYPE_STRING:
 		if label_or_idx:

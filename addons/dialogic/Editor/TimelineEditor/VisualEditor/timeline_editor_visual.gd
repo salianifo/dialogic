@@ -682,7 +682,7 @@ func _add_event_button_pressed(event_resource:DialogicEvent, force_resource := f
 
 	var at_index := -1
 	if selected_items:
-		at_index = selected_items[-1].get_index()+1
+		at_index = selected_items[-1].get_index()
 	else:
 		at_index = %Timeline.get_child_count()
 
@@ -944,41 +944,41 @@ func _on_event_popup_menu_index_pressed(index:int) -> void:
 func _on_right_sidebar_resized() -> void:
 	var _scale := DialogicUtil.get_editor_scale()
 
-	if %RightSidebar.size.x < 160 * _scale and (not sidebar_collapsed or not _initialized):
-		sidebar_collapsed = true
+	#if %RightSidebar.size.x < 160 * _scale and (not sidebar_collapsed or not _initialized):
+		#sidebar_collapsed = true
+#
+		#for section in %RightSidebar.get_node('EventContainer').get_children():
+#
+			#for con in section.get_children():
+#
+				#if con.get_child_count() == 0:
+					#continue
+#
+				#if con.get_child(0) is Label:
+					#con.get_child(0).hide()
+#
+				#elif con.get_child(0) is Button:
+#
+					#for button in con.get_children():
+						#button.toggle_name(false)
+#
+#
+	#elif %RightSidebar.size.x > 160 * _scale and (sidebar_collapsed or not _initialized):
+	sidebar_collapsed = false
 
-		for section in %RightSidebar.get_node('EventContainer').get_children():
+	for section in %RightSidebar.get_node('EventContainer').get_children():
 
-			for con in section.get_children():
+		for con in section.get_children():
 
-				if con.get_child_count() == 0:
-					continue
+			if con.get_child_count() == 0:
+				continue
 
-				if con.get_child(0) is Label:
-					con.get_child(0).hide()
+			if con.get_child(0) is Label:
+				con.get_child(0).show()
 
-				elif con.get_child(0) is Button:
-
-					for button in con.get_children():
-						button.toggle_name(false)
-
-
-	elif %RightSidebar.size.x > 160 * _scale and (sidebar_collapsed or not _initialized):
-		sidebar_collapsed = false
-
-		for section in %RightSidebar.get_node('EventContainer').get_children():
-
-			for con in section.get_children():
-
-				if con.get_child_count() == 0:
-					continue
-
-				if con.get_child(0) is Label:
-					con.get_child(0).show()
-
-				elif con.get_child(0) is Button:
-					for button in con.get_children():
-						button.toggle_name(true)
+			elif con.get_child(0) is Button:
+				for button in con.get_children():
+					button.toggle_name(true)
 
 	if _initialized:
 		DialogicUtil.set_editor_setting("dialogic/editor/right_sidebar_width", %RightSidebar.size.x)
@@ -1112,7 +1112,7 @@ func _input(event:InputEvent) -> void:
 			var events_list := get_clipboard_data()
 			var paste_position := 0
 			if selected_items:
-				paste_position = selected_items[-1].get_index()+1
+				paste_position = selected_items[-1].get_index()
 			else:
 				paste_position = %Timeline.get_child_count()
 			if events_list:
