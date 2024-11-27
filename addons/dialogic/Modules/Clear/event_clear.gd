@@ -14,6 +14,10 @@ var clear_style := true
 var clear_music := true
 var clear_portrait_positions := true
 var clear_background := true
+var clear_foreground := true
+var clear_tint := true
+var clear_weather := true
+var clear_video := true
 
 ################################################################################
 ## 						EXECUTE
@@ -43,10 +47,33 @@ func _execute() -> void:
 		dialogic.Backgrounds.update_background('', '', final_time)
 		if step_by_step: await dialogic.get_tree().create_timer(final_time).timeout
 
+	if clear_foreground and dialogic.has_subsystem('Foregrounds') and dialogic.Foregrounds.has_foreground():
+		dialogic.Foregrounds.update_foreground('', '', final_time)
+		if step_by_step: await dialogic.get_tree().create_timer(final_time).timeout
+
+	if clear_tint and dialogic.has_subsystem('Tint'):
+		dialogic.Tint.update_tint({"red":0, "green":0, "blue":0, "grayscale":0}, final_time)
+		dialogic.Tint.update_portrait_tint({"red":0, "green":0, "blue":0, "grayscale":0}, final_time)
+		if step_by_step: await dialogic.get_tree().create_timer(final_time).timeout
+
+	if clear_weather:
+		var dict := {
+			"command": "weather",
+			"state": DialogicWeatherEvent.WeatherType.SUNNY,
+			}
+		dict.make_read_only()
+		dialogic.emit_signal('signal_event', dict)
+		if step_by_step: await dialogic.get_tree().create_timer(final_time).timeout
+
 	if clear_music and dialogic.has_subsystem('Audio'):
 		for channel_id in dialogic.Audio.max_channels:
 			if dialogic.Audio.has_music(channel_id):
 				dialogic.Audio.update_music('', 0.0, "", final_time, channel_id)
+		if step_by_step: await dialogic.get_tree().create_timer(final_time).timeout
+
+	if clear_video and dialogic.has_subsystem('Video'):
+		## TODO - Add fade if/when fade is added to Video Subsystem
+		dialogic.Video.update_video()
 		if step_by_step: await dialogic.get_tree().create_timer(final_time).timeout
 
 	if clear_style and dialogic.has_subsystem('Styles'):
@@ -89,6 +116,10 @@ func get_shortcode_parameters() -> Dictionary:
 		"portraits"	: {"property": "clear_portraits", 	"default": true},
 		"music"		: {"property": "clear_music", 		"default": true},
 		"background": {"property": "clear_background", 	"default": true},
+		"foreground": {"property": "clear_foreground", 	"default": true},
+		"tint"		: {"property": "clear_tint", 		"default": true},
+		"weather"	: {"property": "clear_weather",		"default": true},
+		"video"		: {"property": "clear_video",		"default": true},
 		"positions"	: {"property": "clear_portrait_positions", 	"default": true},
 		"style"		: {"property": "clear_style", 		"default": true},
 	}
@@ -109,6 +140,10 @@ func build_event_editor() -> void:
 	add_body_edit('clear_textbox', ValueType.BOOL_BUTTON, {'left_text':'Clear:', 'icon':load("res://addons/dialogic/Modules/Clear/clear_textbox.svg"), 'tooltip':'Clear Textbox'})
 	add_body_edit('clear_portraits', ValueType.BOOL_BUTTON, {'icon':load("res://addons/dialogic/Modules/Clear/clear_characters.svg"), 'tooltip':'Clear Portraits'})
 	add_body_edit('clear_background', ValueType.BOOL_BUTTON, {'icon':load("res://addons/dialogic/Modules/Clear/clear_background.svg"), 'tooltip':'Clear Background'})
+	add_body_edit('clear_foreground', ValueType.BOOL_BUTTON, {'icon':load("res://addons/dialogic/Modules/Clear/clear_background.svg"), 'tooltip':'Clear Foreground'})
+	add_body_edit('clear_tint', ValueType.BOOL_BUTTON, {'icon':load("res://addons/dialogic/Modules/Clear/clear_background.svg"), 'tooltip':'Clear Tint'})
+	add_body_edit('clear_weather', ValueType.BOOL_BUTTON, {'icon':load("res://addons/dialogic/Modules/Clear/clear_background.svg"), 'tooltip':'Clear Weather'})
 	add_body_edit('clear_music', ValueType.BOOL_BUTTON, {'icon':load("res://addons/dialogic/Modules/Clear/clear_music.svg"), 'tooltip':'Clear Music'})
+	add_body_edit('clear_video', ValueType.BOOL_BUTTON, {'icon':load("res://addons/dialogic/Modules/Clear/clear_music.svg"), 'tooltip':'Clear Video'})
 	add_body_edit('clear_style', ValueType.BOOL_BUTTON, {'icon':load("res://addons/dialogic/Modules/Clear/clear_style.svg"), 'tooltip':'Clear Style'})
 	add_body_edit('clear_portrait_positions', ValueType.BOOL_BUTTON, {'icon':load("res://addons/dialogic/Modules/Clear/clear_positions.svg"), 'tooltip':'Clear Portrait Positions'})

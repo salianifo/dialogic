@@ -92,10 +92,6 @@ signal signal_event(argument: Variant)
 signal text_signal(argument: String)
 
 
-## Holds preloaded portraits
-var preloaded_portraits: Dictionary = {}
-
-
 # Careful, this section is repopulated automatically at certain moments.
 #region SUBSYSTEMS
 
@@ -104,6 +100,9 @@ var Animations := preload("res://addons/dialogic/Modules/Core/subsystem_animatio
 
 var Audio := preload("res://addons/dialogic/Modules/Audio/subsystem_audio.gd").new():
 	get: return get_subsystem("Audio")
+
+var AutoJumpDate := preload("res://addons/dialogic_additions/AutoJumpDate/subsystem_auto_jump_date.gd").new():
+	get: return get_subsystem("AutoJumpDate")
 
 var Backgrounds := preload("res://addons/dialogic/Modules/Background/subsystem_backgrounds.gd").new():
 	get: return get_subsystem("Backgrounds")
@@ -114,6 +113,8 @@ var Choices := preload("res://addons/dialogic/Modules/Choice/subsystem_choices.g
 var Expressions := preload("res://addons/dialogic/Modules/Core/subsystem_expression.gd").new():
 	get: return get_subsystem("Expressions")
 
+var Foregrounds := preload("res://addons/dialogic_additions/Foreground/subsystem_foregrounds.gd").new():
+	get: return get_subsystem("Foregrounds")
 
 var Glossary := preload("res://addons/dialogic/Modules/Glossary/subsystem_glossary.gd").new():
 	get: return get_subsystem("Glossary")
@@ -148,8 +149,14 @@ var Text := preload("res://addons/dialogic/Modules/Text/subsystem_text.gd").new(
 var TextInput := preload("res://addons/dialogic/Modules/TextInput/subsystem_text_input.gd").new():
 	get: return get_subsystem("TextInput")
 
+var Tint := preload("res://addons/dialogic_additions/Tint/subsystem_tint.gd").new():
+	get: return get_subsystem("Tint")
+
 var VAR := preload("res://addons/dialogic/Modules/Variable/subsystem_variables.gd").new():
 	get: return get_subsystem("VAR")
+
+var Video := preload("res://addons/dialogic_additions/Video/subsystem_video.gd").new():
+	get: return get_subsystem("Video")
 
 var Voice := preload("res://addons/dialogic/Modules/Voice/subsystem_voice.gd").new():
 	get: return get_subsystem("Voice")
@@ -218,37 +225,6 @@ func start_timeline(timeline:Variant, label_or_idx:Variant = "") -> void:
 	for event in current_timeline_events:
 		event.dialogic = self
 	current_event_idx = -1
-
-	var new_portraits := {}
-
-	for event in current_timeline_events:
-		var character: DialogicCharacter
-		var portrait := ""
-
-		if event is DialogicCharacterEvent and event.action != DialogicCharacterEvent.Actions.LEAVE:
-			character = event.character
-			portrait = event.portrait
-		elif event is DialogicTextEvent:
-			character = event.character
-			portrait = event.portrait
-
-		if character:
-			if portrait.is_empty():
-				portrait = character.default_portrait
-
-			if portrait in character.portraits:
-				var scene_path: String = character.portraits[portrait].get('scene', '')
-
-				if scene_path.is_empty():
-					continue
-
-				if scene_path in preloaded_portraits:
-					new_portraits[scene_path] = preloaded_portraits[scene_path]
-				else:
-					new_portraits[scene_path] = load(scene_path) as PackedScene
-
-	preloaded_portraits.clear()
-	preloaded_portraits = new_portraits
 
 	if typeof(label_or_idx) == TYPE_STRING:
 		if label_or_idx:
