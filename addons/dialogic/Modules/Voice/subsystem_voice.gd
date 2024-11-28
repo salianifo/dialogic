@@ -63,6 +63,7 @@ func resume() -> void:
 
 func _ready() -> void:
 	add_child(voice_player)
+	add_child(finish_timer)
 	# Disabled due to https://github.com/godotengine/godot/issues/56156
 	#voice_player.finished.connect(_on_voice_finished)
 
