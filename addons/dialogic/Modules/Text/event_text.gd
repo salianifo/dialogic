@@ -183,6 +183,8 @@ func _execute() -> void:
 	if dialogic.has_subsystem('Voice'):
 		dialogic.Voice.stop_audio()
 
+	dialogic.current_state_info.erase('temp_speakers')
+
 	finish()
 
 
