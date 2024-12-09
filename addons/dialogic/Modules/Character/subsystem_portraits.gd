@@ -457,6 +457,13 @@ func change_character_portrait(character: DialogicCharacter, portrait: String, f
 
 	var info := _change_portrait(dialogic.current_state_info.portraits[character.resource_path].node, portrait, fade_animation, fade_length)
 	dialogic.current_state_info.portraits[character.resource_path].portrait = info.portrait
+
+	if character.persist_extra_data:
+		_change_portrait_extradata(
+			dialogic.current_state_info.portraits[character.resource_path].node,
+			dialogic.current_state_info.portraits[character.resource_path].get('extra_data', '')
+			)
+
 	_change_portrait_mirror(
 			dialogic.current_state_info.portraits[character.resource_path].node,
 			dialogic.current_state_info.portraits[character.resource_path].get('custom_mirror', false)
@@ -488,6 +495,11 @@ func change_character_extradata(character:DialogicCharacter, extra_data:="") -> 
 	if !is_character_joined(character):
 		return
 	_change_portrait_extradata(dialogic.current_state_info.portraits[character.resource_path].node, extra_data)
+
+	var latest_portrait: Node2D = dialogic.current_state_info.portraits[character.resource_path].node.get_child(-1)
+	if latest_portrait and latest_portrait.has_method('_get_modified_extra_data'):
+		extra_data = latest_portrait._get_modified_extra_data()
+
 	dialogic.current_state_info.portraits[character.resource_path]['extra_data'] = extra_data
 
 

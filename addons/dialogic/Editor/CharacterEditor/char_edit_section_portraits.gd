@@ -16,6 +16,7 @@ func _ready() -> void:
 	%MainOffset._load_display_info({'step':1})
 	%MainOffset.value_changed.connect(main_portrait_settings_update)
 	%MainMirror.toggled.connect(main_portrait_settings_update)
+	%PersistExtData.toggled.conenct(main_portrait_settings_update)
 
 	# Setting up Default Portrait Picker
 	%DefaultPortraitPicker.resource_icon = load("res://addons/dialogic/Editor/Images/Resources/portrait.svg")
@@ -29,6 +30,7 @@ func main_portrait_settings_update(_something=null, _value=null) -> void:
 	character_editor.current_resource.scale = %MainScale.value/100.0
 	character_editor.current_resource.offset = %MainOffset.current_value
 	character_editor.current_resource.mirror = %MainMirror.button_pressed
+	character_editor.current_resource.persit_extra_data = %PersistExtData.button_pressed
 	character_editor.update_preview()
 	character_editor.something_changed()
 
@@ -50,6 +52,7 @@ func _load_character(resource:DialogicCharacter) -> void:
 	%MainScale.value = 100*resource.scale
 	%MainOffset.set_value(resource.offset)
 	%MainMirror.button_pressed = resource.mirror
+	%PersistExtData.button_pressed = resource.persist_extra_data
 	loading = false
 
 
@@ -65,6 +68,7 @@ func _save_changes(resource:DialogicCharacter) -> DialogicCharacter:
 	resource.scale = %MainScale.value/100.0
 	resource.offset = %MainOffset.current_value
 	resource.mirror = %MainMirror.button_pressed
+	resource.persist_extra_data = %PersistExtData.button_pressed
 	return resource
 
 
@@ -74,4 +78,3 @@ func suggest_portraits(search:String) -> Dictionary:
 	for portrait in character_editor.get_updated_portrait_dict().keys():
 		suggestions[portrait] = {'value':portrait}
 	return suggestions
-
