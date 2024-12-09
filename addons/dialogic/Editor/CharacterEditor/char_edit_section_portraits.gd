@@ -16,7 +16,7 @@ func _ready() -> void:
 	%MainOffset._load_display_info({'step':1})
 	%MainOffset.value_changed.connect(main_portrait_settings_update)
 	%MainMirror.toggled.connect(main_portrait_settings_update)
-	%PersistExtData.toggled.conenct(main_portrait_settings_update)
+	%PersistExtData.toggled.connect(main_portrait_settings_update)
 
 	# Setting up Default Portrait Picker
 	%DefaultPortraitPicker.resource_icon = load("res://addons/dialogic/Editor/Images/Resources/portrait.svg")
