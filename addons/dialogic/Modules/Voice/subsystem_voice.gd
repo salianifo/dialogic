@@ -114,7 +114,7 @@ func set_bus(bus_name: String) -> void:
 
 ## Stops the current voice line from playing.
 func stop_audio() -> void:
-	if voice_player.playing:
+	if voice_player.playing or finish_timer.time_left > 0:
 		voiceline_stopped.emit({'file':current_audio_file, 'remaining_time':get_remaining_time()})
 
 	finish_timer.stop()
