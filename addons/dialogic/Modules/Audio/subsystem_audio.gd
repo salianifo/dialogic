@@ -141,7 +141,7 @@ func update_music(path := "", volume := 0.0, audio_bus := "", fade_time := 0.0, 
 		current_music_player[channel_id] = base_music_player.duplicate()
 		add_child(current_music_player[channel_id])
 		current_music_player[channel_id].stream = load(path)
-		current_music_player[channel_id].volume_db = volume
+		current_music_player[channel_id].volume_db = linear_to_db(0.0) if fade_time > 0.0 else volume
 		if audio_bus:
 			current_music_player[channel_id].bus = audio_bus
 		if not current_music_player[channel_id].stream is AudioStreamWAV:

@@ -608,7 +608,7 @@ func get_joined_characters() -> Array[DialogicCharacter]:
 	var chars: Array[DialogicCharacter] = []
 
 	for char_path: String in dialogic.current_state_info.get('portraits', {}).keys():
-		if dialogic.current_state_info['portraits'][char_path].has("portraits"):
+		if dialogic.current_state_info['portraits'][char_path].has("portrait"):
 			chars.append(load(char_path))
 
 	return chars
