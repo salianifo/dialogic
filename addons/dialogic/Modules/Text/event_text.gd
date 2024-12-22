@@ -121,12 +121,12 @@ func _execute() -> void:
 			final_text = segment
 			
 			if character:
-				final_text = "[outline_size=15][outline_color={color}]{text}[/outline_color][/outline_size]".format({
+				final_text = "[outline_size=20][outline_color={color}]{text}[/outline_color][/outline_size]".format({
 					'color': character.color.to_html(),
 					'text': final_text
 				})
 			else:
-				final_text = "[outline_size=15][outline_color={color}]{text}[/outline_color][/outline_size]".format({
+				final_text = "[outline_size=20][outline_color={color}]{text}[/outline_color][/outline_size]".format({
 					'color': Color.BLACK.to_html(),
 					'text': final_text
 				})
