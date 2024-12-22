@@ -380,6 +380,8 @@ func join_character(character:DialogicCharacter, portrait:String,  position_id:S
 		change_character_mirror(character, mirrored)
 		return
 
+	var previous_extra_data: String = dialogic.current_state_info.portraits.get(character.resource_path, {}).get('extra_data', '')
+
 	var container := dialogic.PortraitContainers.add_container(character.get_character_name())
 	var character_node := add_character(character, container, portrait, position_id)
 	if character_node == null:
@@ -387,11 +389,9 @@ func join_character(character:DialogicCharacter, portrait:String,  position_id:S
 
 	dialogic.current_state_info['portraits'][character.resource_path] = {'portrait':portrait, 'node':character_node, 'position_id':position_id, 'custom_mirror':mirrored}
 
-	if character.persist_extra_data:
-		_change_portrait_extradata(
-			dialogic.current_state_info.portraits[character.resource_path].node,
-			dialogic.current_state_info.portraits[character.resource_path].get('extra_data', '')
-			)
+	if character.persist_extra_data and not previous_extra_data.is_empty():
+		_change_portrait_extradata(character_node, previous_extra_data)
+		dialogic.current_state_info['portraits'][character.resource_path]['extra_data'] = previous_extra_data
 
 	_change_portrait_mirror(character_node, mirrored)
 	_change_portrait_extradata(character_node, extra_data)
