@@ -30,7 +30,7 @@ func main_portrait_settings_update(_something=null, _value=null) -> void:
 	character_editor.current_resource.scale = %MainScale.value/100.0
 	character_editor.current_resource.offset = %MainOffset.current_value
 	character_editor.current_resource.mirror = %MainMirror.button_pressed
-	character_editor.current_resource.persit_extra_data = %PersistExtData.button_pressed
+	character_editor.current_resource.persist_extra_data = %PersistExtData.button_pressed
 	character_editor.update_preview()
 	character_editor.something_changed()
 

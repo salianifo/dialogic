@@ -32,6 +32,8 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 	var portraits_info: Dictionary = dialogic.current_state_info.portraits.duplicate()
 	dialogic.current_state_info.portraits = {}
 	for character_path in portraits_info:
+		if not portraits_info[character_path].has("portrait"):
+			continue
 		var character_info: Dictionary = portraits_info[character_path]
 		var character: DialogicCharacter = load(character_path)
 		var container := dialogic.PortraitContainers.load_position_container(character.get_character_name())
@@ -50,13 +52,13 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 
 func pause() -> void:
 	for portrait in dialogic.current_state_info['portraits'].values():
-		if portrait.node.has_meta('animation_node'):
+		if portrait.has("portrait") and portrait.node.has_meta('animation_node'):
 			portrait.node.get_meta('animation_node').pause()
 
 
 func resume() -> void:
 	for portrait in dialogic.current_state_info['portraits'].values():
-		if portrait.node.has_meta('animation_node'):
+		if portrait.has("portrait") and portrait.node.has_meta('animation_node'):
 			portrait.node.get_meta('animation_node').resume()
 
 
@@ -583,7 +585,7 @@ func remove_character(character: DialogicCharacter) -> void:
 		character_node.queue_free()
 		character_left.emit({'character': character})
 
-	dialogic.current_state_info['portraits'].erase(character.resource_path)
+	dialogic.current_state_info['portraits'][character.resource_path].erase("portrait")
 
 
 func get_current_character() -> DialogicCharacter:
@@ -595,7 +597,7 @@ func get_current_character() -> DialogicCharacter:
 
 ## Returns true if the given character is currently joined.
 func is_character_joined(character: DialogicCharacter) -> bool:
-	if character == null or not character.resource_path in dialogic.current_state_info['portraits']:
+	if character == null or not character.resource_path in dialogic.current_state_info['portraits'] or not dialogic.current_state_info['portraits'][character.resource_path].has("portrait"):
 		return false
 
 	return true
@@ -606,7 +608,8 @@ func get_joined_characters() -> Array[DialogicCharacter]:
 	var chars: Array[DialogicCharacter] = []
 
 	for char_path: String in dialogic.current_state_info.get('portraits', {}).keys():
-		chars.append(load(char_path))
+		if dialogic.current_state_info['portraits'][char_path].has("portraits"):
+			chars.append(load(char_path))
 
 	return chars
 
