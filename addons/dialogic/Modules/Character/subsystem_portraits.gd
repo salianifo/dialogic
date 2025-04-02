@@ -32,6 +32,8 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 	var portraits_info: Dictionary = dialogic.current_state_info.portraits.duplicate()
 	dialogic.current_state_info.portraits = {}
 	for character_path in portraits_info:
+		if not portraits_info[character_path].has("portrait"):
+			continue
 		var character_info: Dictionary = portraits_info[character_path]
 		var character: DialogicCharacter = load(character_path)
 		var container := dialogic.PortraitContainers.load_position_container(character.get_character_name())
@@ -62,13 +64,13 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 
 func pause() -> void:
 	for portrait in dialogic.current_state_info['portraits'].values():
-		if portrait.node.has_meta('animation_node'):
+		if portrait.has("portrait") and portrait.node.has_meta('animation_node'):
 			portrait.node.get_meta('animation_node').pause()
 
 
 func resume() -> void:
 	for portrait in dialogic.current_state_info['portraits'].values():
-		if portrait.node.has_meta('animation_node'):
+		if portrait.has("portrait") and portrait.node.has_meta('animation_node'):
 			portrait.node.get_meta('animation_node').resume()
 
 
@@ -406,12 +408,18 @@ func join_character(character:DialogicCharacter, portrait:String,  position_id:S
 		change_character_mirror(character, mirrored)
 		return
 
+	var previous_extra_data: String = dialogic.current_state_info.portraits.get(character.resource_path, {}).get('extra_data', '')
+
 	var container := dialogic.PortraitContainers.add_container(character.get_character_name())
 	var character_node := await add_character(character, container, portrait, position_id)
 	if character_node == null:
 		return null
 
 	dialogic.current_state_info['portraits'][character.resource_path] = {'portrait':portrait, 'node':character_node, 'position_id':position_id, 'custom_mirror':mirrored}
+
+	if character.persist_extra_data and not previous_extra_data.is_empty():
+		_change_portrait_extradata(character_node, previous_extra_data)
+		dialogic.current_state_info['portraits'][character.resource_path]['extra_data'] = previous_extra_data
 
 	_change_portrait_mirror(character_node, mirrored)
 	_change_portrait_extradata(character_node, extra_data)
@@ -495,6 +503,13 @@ func change_character_portrait(character: DialogicCharacter, portrait: String, f
 
 	var info := await _change_portrait(dialogic.current_state_info.portraits[character.resource_path].node, portrait, fade_animation, fade_length)
 	dialogic.current_state_info.portraits[character.resource_path].portrait = info.portrait
+
+	if character.persist_extra_data:
+		_change_portrait_extradata(
+			dialogic.current_state_info.portraits[character.resource_path].node,
+			dialogic.current_state_info.portraits[character.resource_path].get('extra_data', '')
+			)
+
 	_change_portrait_mirror(
 			dialogic.current_state_info.portraits[character.resource_path].node,
 			dialogic.current_state_info.portraits[character.resource_path].get('custom_mirror', false)
@@ -526,6 +541,11 @@ func change_character_extradata(character:DialogicCharacter, extra_data:="") -> 
 	if !is_character_joined(character):
 		return
 	_change_portrait_extradata(dialogic.current_state_info.portraits[character.resource_path].node, extra_data)
+
+	var latest_portrait: Node2D = dialogic.current_state_info.portraits[character.resource_path].node.get_child(-1)
+	if latest_portrait and latest_portrait.has_method('_get_modified_extra_data'):
+		extra_data = latest_portrait._get_modified_extra_data()
+
 	dialogic.current_state_info.portraits[character.resource_path]['extra_data'] = extra_data
 
 
@@ -609,12 +629,12 @@ func remove_character(character: DialogicCharacter) -> void:
 		character_node.queue_free()
 		character_left.emit({'character': character})
 
-	dialogic.current_state_info['portraits'].erase(character.resource_path)
+	dialogic.current_state_info['portraits'][character.resource_path].erase("portrait")
 
 
 ## Returns true if the given character is currently joined.
 func is_character_joined(character: DialogicCharacter) -> bool:
-	if character == null or not character.resource_path in dialogic.current_state_info['portraits']:
+	if character == null or not character.resource_path in dialogic.current_state_info['portraits'] or not dialogic.current_state_info['portraits'][character.resource_path].has("portrait"):
 		return false
 
 	return true
@@ -625,7 +645,8 @@ func get_joined_characters() -> Array[DialogicCharacter]:
 	var chars: Array[DialogicCharacter] = []
 
 	for char_path: String in dialogic.current_state_info.get('portraits', {}).keys():
-		chars.append(load(char_path))
+		if dialogic.current_state_info['portraits'][char_path].has("portrait"):
+			chars.append(load(char_path))
 
 	return chars
 

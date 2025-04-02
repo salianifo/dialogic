@@ -19,6 +19,8 @@ class_name DialogicCharacter
 @export var default_portrait := ""
 @export var portraits := {}
 
+@export var persist_extra_data := true
+
 @export var custom_info := {}
 
 ## All valid properties that can be accessed by their translation.
