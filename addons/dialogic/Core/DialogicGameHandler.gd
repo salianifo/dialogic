@@ -108,6 +108,9 @@ var Animations := preload("res://addons/dialogic/Modules/Core/subsystem_animatio
 var Audio := preload("res://addons/dialogic/Modules/Audio/subsystem_audio.gd").new():
 	get: return get_subsystem("Audio")
 
+var AutoJumpDate := preload("res://addons/dialogic_additions/AutoJumpDate/subsystem_auto_jump_date.gd").new():
+	get: return get_subsystem("AutoJumpDate")
+
 var Backgrounds := preload("res://addons/dialogic/Modules/Background/subsystem_backgrounds.gd").new():
 	get: return get_subsystem("Backgrounds")
 
@@ -116,6 +119,9 @@ var Choices := preload("res://addons/dialogic/Modules/Choice/subsystem_choices.g
 
 var Expressions := preload("res://addons/dialogic/Modules/Core/subsystem_expression.gd").new():
 	get: return get_subsystem("Expressions")
+
+var Foregrounds := preload("res://addons/dialogic_additions/Foreground/subsystem_foregrounds.gd").new():
+	get: return get_subsystem("Foregrounds")
 
 var Glossary := preload("res://addons/dialogic/Modules/Glossary/subsystem_glossary.gd").new():
 	get: return get_subsystem("Glossary")
@@ -150,8 +156,14 @@ var Text := preload("res://addons/dialogic/Modules/Text/subsystem_text.gd").new(
 var TextInput := preload("res://addons/dialogic/Modules/TextInput/subsystem_text_input.gd").new():
 	get: return get_subsystem("TextInput")
 
+var Tint := preload("res://addons/dialogic_additions/Tint/subsystem_tint.gd").new():
+	get: return get_subsystem("Tint")
+
 var VAR := preload("res://addons/dialogic/Modules/Variable/subsystem_variables.gd").new():
 	get: return get_subsystem("VAR")
+
+var Video := preload("res://addons/dialogic_additions/Video/subsystem_video.gd").new():
+	get: return get_subsystem("Video")
 
 var Voice := preload("res://addons/dialogic/Modules/Voice/subsystem_voice.gd").new():
 	get: return get_subsystem("Voice")
