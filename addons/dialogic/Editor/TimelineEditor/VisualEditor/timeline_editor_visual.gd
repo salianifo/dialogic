@@ -983,41 +983,41 @@ func play_from_here(index:=-1) -> void:
 func _on_right_sidebar_resized() -> void:
 	var _scale := DialogicUtil.get_editor_scale()
 
-	if %RightSidebar.size.x < 160 * _scale and (not sidebar_collapsed or not _initialized):
-		sidebar_collapsed = true
+	#if %RightSidebar.size.x < 160 * _scale and (not sidebar_collapsed or not _initialized):
+		#sidebar_collapsed = true
+#
+		#for section in %RightSidebar.get_node('EventContainer').get_children():
+#
+			#for con in section.get_children():
+#
+				#if con.get_child_count() == 0:
+					#continue
+#
+				#if con.get_child(0) is Label:
+					#con.get_child(0).hide()
+#
+				#elif con.get_child(0) is Button:
+#
+					#for button in con.get_children():
+						#button.toggle_name(false)
+#
+#
+	#elif %RightSidebar.size.x > 160 * _scale and (sidebar_collapsed or not _initialized):
+	sidebar_collapsed = false
 
-		for section in %RightSidebar.get_node('EventContainer').get_children():
+	for section in %RightSidebar.get_node('EventContainer').get_children():
 
-			for con in section.get_children():
+		for con in section.get_children():
 
-				if con.get_child_count() == 0:
-					continue
+			if con.get_child_count() == 0:
+				continue
 
-				if con.get_child(0) is Label:
-					con.get_child(0).hide()
+			if con.get_child(0) is Label:
+				con.get_child(0).show()
 
-				elif con.get_child(0) is Button:
-
-					for button in con.get_children():
-						button.toggle_name(false)
-
-
-	elif %RightSidebar.size.x > 160 * _scale and (sidebar_collapsed or not _initialized):
-		sidebar_collapsed = false
-
-		for section in %RightSidebar.get_node('EventContainer').get_children():
-
-			for con in section.get_children():
-
-				if con.get_child_count() == 0:
-					continue
-
-				if con.get_child(0) is Label:
-					con.get_child(0).show()
-
-				elif con.get_child(0) is Button:
-					for button in con.get_children():
-						button.toggle_name(true)
+			elif con.get_child(0) is Button:
+				for button in con.get_children():
+					button.toggle_name(true)
 
 	if _initialized:
 		DialogicUtil.set_editor_setting("dialogic/editor/right_sidebar_width", %RightSidebar.size.x)
