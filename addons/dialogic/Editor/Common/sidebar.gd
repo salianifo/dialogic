@@ -137,6 +137,16 @@ func _on_editors_editor_changed(_previous: DialogicEditor, current: DialogicEdit
 	%ContentListSection.visible = current.current_resource is DialogicTimeline
 	update_resource_list()
 
+	_reset_scroll.call_deferred()
+
+
+func _reset_scroll() -> void:
+	await get_tree().process_frame
+
+	var selected_item := resource_tree.get_selected()
+	if selected_item:
+		resource_tree.scroll_to_item(selected_item, true)
+
 
 ## Cleans resources that have been deleted from the resource list
 func clean_resource_list(resources_list: Array = []) -> PackedStringArray:
@@ -153,11 +163,8 @@ func update_resource_list(resources_list: PackedStringArray = []) -> void:
 
 	var character_directory: Dictionary = DialogicResourceUtil.get_character_directory()
 	var timeline_directory: Dictionary = DialogicResourceUtil.get_timeline_directory()
-	if resources_list.is_empty():
-		resources_list = DialogicUtil.get_editor_setting("last_resources", [])
-		if not current_file in resources_list:
-			resources_list.append(current_file)
 
+	resources_list = DialogicResourceUtil.scan_folder("res://", "dch") + DialogicResourceUtil.scan_folder("res://", "dtl")
 	resources_list = clean_resource_list(resources_list)
 
 	%CurrentResource.text = "No Resource"
