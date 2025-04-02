@@ -710,7 +710,7 @@ func _add_event_button_pressed(event_resource:DialogicEvent, force_resource := f
 
 	var at_index := -1
 	if selected_items:
-		at_index = selected_items[-1].get_index()+1
+		at_index = selected_items[-1].get_index()
 	else:
 		at_index = %Timeline.get_child_count()
 
@@ -1156,7 +1156,7 @@ func _input(event:InputEvent) -> void:
 			var events_list := get_clipboard_data()
 			var paste_position := 0
 			if selected_items:
-				paste_position = selected_items[-1].get_index()+1
+				paste_position = selected_items[-1].get_index()
 			else:
 				paste_position = %Timeline.get_child_count()
 			if events_list:
