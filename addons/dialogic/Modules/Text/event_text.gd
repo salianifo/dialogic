@@ -134,6 +134,18 @@ func _execute() -> void:
 			var is_append: bool = split_text[section_idx][1]
 
 			final_text = segment
+			
+			if character:
+				final_text = "[outline_size=20][outline_color={color}]{text}[/outline_color][/outline_size]".format({
+					'color': character.color.to_html(),
+					'text': final_text
+				})
+			else:
+				final_text = "[outline_size=20][outline_color={color}]{text}[/outline_color][/outline_size]".format({
+					'color': Color.BLACK.to_html(),
+					'text': final_text
+				})
+			
 			dialogic.Text.about_to_show_text.emit({'text':final_text, 'character':character, 'portrait':portrait, 'append': is_append})
 
 			await dialogic.Text.update_textbox(final_text, false)
