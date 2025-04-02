@@ -40,6 +40,9 @@ var current_audio_file: String
 ## The audio player for the voiceline.
 var voice_player := AudioStreamPlayer.new()
 
+## Temporary timer to emit finished signal until https://github.com/godotengine/godot/issues/56156 is fixed.
+var finish_timer := Timer.new()
+
 #region STATE
 ####################################################################################################
 
@@ -60,7 +63,12 @@ func resume() -> void:
 
 func _ready() -> void:
 	add_child(voice_player)
-	voice_player.finished.connect(_on_voice_finished)
+	add_child(finish_timer)
+	# Disabled due to https://github.com/godotengine/godot/issues/56156
+	#voice_player.finished.connect(_on_voice_finished)
+
+	finish_timer.one_shot = true
+	finish_timer.timeout.connect(_on_voice_finished)
 
 
 ## Whether the current event is a text event and has a voice
@@ -77,6 +85,8 @@ func is_voiced(index: int) -> bool:
 ## Requires [method set_file] to be called before or nothing plays.
 func play_voice() -> void:
 	voice_player.play()
+	finish_timer.wait_time = voice_player.stream.get_length()
+	finish_timer.start()
 	voiceline_started.emit({'file': current_audio_file})
 
 
@@ -104,9 +114,10 @@ func set_bus(bus_name: String) -> void:
 
 ## Stops the current voice line from playing.
 func stop_audio() -> void:
-	if voice_player.playing:
+	if voice_player.playing or finish_timer.time_left > 0:
 		voiceline_stopped.emit({'file':current_audio_file, 'remaining_time':get_remaining_time()})
 
+	finish_timer.stop()
 	voice_player.stop()
 
 
