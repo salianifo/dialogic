@@ -213,6 +213,8 @@ func update_resource_list(resources_list: PackedStringArray = []) -> void:
 			for dir in dirs:
 				var dir_item := add_folder_item(dir, root)
 
+				dirs[dir].sort_custom(_sort_by_item_text)
+
 				for item in dirs[dir]:
 					add_item(item, dir_item, current_file)
 
@@ -251,8 +253,8 @@ func update_resource_list(resources_list: PackedStringArray = []) -> void:
 			# Sort the folder names by their folder name (not by the full path)
 			var sorted_dir_keys := unique_folder_names.keys()
 			sorted_dir_keys.sort_custom(
-				func(x, y):
-					return x.get_slice("/", x.get_slice_count("/")-1) < y.get_slice("/", y.get_slice_count("/")-1)
+				func(x: String, y: String):
+					return x.get_slice("/", x.get_slice_count("/")-1).naturalnocasecmp_to(y.get_slice("/", y.get_slice_count("/")-1)) < 0
 					)
 			var folder_colors: Dictionary = ProjectSettings.get_setting("file_customization/folder_colors", {})
 
@@ -270,6 +272,8 @@ func update_resource_list(resources_list: PackedStringArray = []) -> void:
 							dir_color = folder_colors[path]
 
 				var dir_item := add_folder_item(display_name, root, dir_color, dir_path)
+
+				dirs[dir_path].sort_custom(_sort_by_item_text)
 
 				for item in dirs[dir_path]:
 					add_item(item, dir_item, current_file)
@@ -360,7 +364,7 @@ class ResourceListItem:
 
 
 func _sort_by_item_text(a: ResourceListItem, b: ResourceListItem) -> bool:
-	return a.text < b.text
+	return a.text.naturalnocasecmp_to(b.text) < 0
 
 #endregion
 
@@ -515,6 +519,8 @@ func _on_grouping_changed(idx: int) -> void:
 		group_mode = (id as GroupMode)
 		DialogicUtil.set_editor_setting("sidebar_group_mode", id)
 		update_resource_list()
+
+		_reset_scroll.call_deferred()
 
 	%FolderColors.disabled = group_mode != GroupMode.PATH
 	%TrimFolderPaths.disabled = group_mode != GroupMode.PATH

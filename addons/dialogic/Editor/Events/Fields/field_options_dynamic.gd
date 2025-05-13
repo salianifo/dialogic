@@ -196,7 +196,14 @@ func _on_Search_text_changed(new_text:String, just_update:bool = false) -> void:
 	var line_length := 0
 	var idx := 0
 
-	if new_text and mode == Modes.ANY_VALID_STRING and not new_text in suggestions.keys():
+	var keys := suggestions.keys()
+	var first: String = keys.pop_front()
+	keys.sort_custom(func (a: String, b: String) -> bool:
+		return a.naturalnocasecmp_to(b) < 0
+		)
+	keys.push_front(first)
+
+	if new_text and mode == Modes.ANY_VALID_STRING and not new_text in keys:
 		%Suggestions.add_item(new_text, get_theme_icon('GuiScrollArrowRight', 'EditorIcons'))
 		%Suggestions.set_item_metadata(idx, new_text)
 		line_length = get_theme_font('font', 'Label').get_string_size(
@@ -204,7 +211,7 @@ func _on_Search_text_changed(new_text:String, just_update:bool = false) -> void:
 			).x + %Suggestions.fixed_icon_size.x * %Suggestions.get_icon_scale() + _icon_margin * 2 + _h_separation
 		idx += 1
 
-	for element in suggestions:
+	for element in keys:
 		if new_text.is_empty() or new_text.to_lower() in element.to_lower() or new_text.to_lower() in str(suggestions[element].value).to_lower() or new_text.to_lower() in suggestions[element].get('tooltip', '').to_lower():
 			var curr_line_length: int = 0
 			curr_line_length = int(get_theme_font('font', 'Label').get_string_size(

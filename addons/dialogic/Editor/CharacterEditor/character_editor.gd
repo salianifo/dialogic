@@ -384,7 +384,12 @@ func load_portrait_tree() -> void:
 	%PortraitTree.clear_tree()
 	var root: TreeItem = %PortraitTree.create_item()
 
-	for portrait in current_resource.portraits.keys():
+	var keys: Array = current_resource.portraits.keys()
+	keys.sort_custom(func (a: String, b: String) -> bool:
+		return a.naturalnocasecmp_to(b) < 0
+		)
+
+	for portrait in keys:
 		var portrait_label: String = portrait
 		var parent: TreeItem = %PortraitTree.get_root()
 		if '/' in portrait:
