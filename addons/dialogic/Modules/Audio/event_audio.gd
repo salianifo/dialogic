@@ -38,10 +38,10 @@ var loop := true
 var sync_channel := ""
 
 ## Helpers. Set automatically
-var set_fade_length := false
-var set_volume := false
-var set_audio_bus := false
-var set_loop := false
+var set_fade_length := true
+var set_volume := true
+var set_audio_bus := true
+var set_loop := true
 var set_sync_channel := false
 
 var regex := RegEx.create_from_string(r'(?:audio)\s*(?<channel>[\w-]{2,}|[\w]*)?\s*(")?(?<file_path>(?(2)[^"\n]*|[^(: \n]*))(?(2)"|)(?:\s*\[(?<shortcode>.*)\])?')
