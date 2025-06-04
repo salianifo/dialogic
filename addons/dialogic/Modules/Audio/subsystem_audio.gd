@@ -103,6 +103,8 @@ func update_audio(channel_name:= "", path := "", settings_overrides := {}) -> vo
 	)
 	audio_settings.merge(settings_overrides, true)
 
+	push_warning("Playing audio with the following settings:", audio_settings)
+
 	## Handle previous audio on channel
 	if is_channel_playing(channel_name):
 		var prev_audio_node: AudioStreamPlayer = current_audio_channels[channel_name]
@@ -201,12 +203,14 @@ func is_channel_playing(channel_name: String) -> bool:
 
 ## Stops audio on all channels.
 func stop_all_channels(fade := 0.0) -> void:
+	push_warning("Stopping all audio channels")
 	for channel_name in current_audio_channels.keys():
 		update_audio(channel_name, '', {"fade_length":fade})
 
 
 ### Stops all one-shot sounds.
 func stop_all_one_shot_sounds() -> void:
+	push_warning("Stopping all one-shot sounds")
 	for i in one_shot_audio_node.get_children():
 		i.queue_free()
 
@@ -233,6 +237,7 @@ func is_any_channel_playing() -> bool:
 
 
 func _on_audio_finished(player: AudioStreamPlayer, channel_name: String, path: String) -> void:
+	push_warning("Audio finished signal")
 	if current_audio_channels.has(channel_name) and current_audio_channels[channel_name] == player:
 		current_audio_channels.erase(channel_name)
 	player.queue_free()
