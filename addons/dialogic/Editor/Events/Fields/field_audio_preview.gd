@@ -48,5 +48,11 @@ func _stop() -> void:
 func _play() -> void:
 	if ResourceLoader.exists(file_path):
 		%AudioStreamPlayer.stream = load(file_path)
+		if "loop" in %AudioStreamPlayer.stream:
+			%AudioStreamPlayer.stream.loop = true
+		elif "loop_mode" in %AudioStreamPlayer.stream:
+			%AudioStreamPlayer.stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+			%AudioStreamPlayer.stream.loop_begin = 0
+			%AudioStreamPlayer.stream.loop_end = %AudioStreamPlayer.stream.mix_rate * %AudioStreamPlayer.stream.get_length()
 		%AudioStreamPlayer.play()
 		self.icon = get_theme_icon("Stop", "EditorIcons")
