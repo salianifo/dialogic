@@ -422,7 +422,7 @@ func join_character(character:DialogicCharacter, portrait:String,  position_id:S
 		dialogic.current_state_info['portraits'][character.resource_path]['extra_data'] = previous_extra_data
 
 	_change_portrait_mirror(character_node, mirrored)
-	_change_portrait_extradata(character_node, extra_data)
+	change_character_extradata(character, extra_data)
 	_change_portrait_z_index(character_node, z_index)
 
 	var info := {'character':character}
