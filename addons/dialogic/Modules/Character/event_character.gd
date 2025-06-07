@@ -119,10 +119,16 @@ func _execute() -> void:
 			var character_name_text := dialogic.Text.get_character_name_parsed(character)
 			dialogic.History.store_simple_history_entry(character_name_text + " joined", event_name, {'character': character_name_text, 'mode':'Join'})
 
-		await dialogic.Portraits.join_character(
-			character, portrait, transform,
-			mirrored, z_index, extra_data,
-			animation_name, final_animation_length, animation_wait)
+		if animation_wait:
+			await dialogic.Portraits.join_character(
+				character, portrait, transform,
+				mirrored, z_index, extra_data,
+				animation_name, final_animation_length, animation_wait)
+		else:
+			dialogic.Portraits.join_character(
+				character, portrait, transform,
+				mirrored, z_index, extra_data,
+				animation_name, final_animation_length, animation_wait)
 
 	# LEAVE -------------------------------------
 	elif action == Actions.LEAVE:
