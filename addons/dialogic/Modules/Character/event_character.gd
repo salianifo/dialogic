@@ -105,9 +105,14 @@ func _execute() -> void:
 		return
 
 	if animation_name.is_empty():
-		animation_name = ProjectSettings.get_setting('dialogic/animations/join_default', "Fade In Up")
-		animation_length = dialogic.Portraits._get_join_default_length()
-		animation_wait = ProjectSettings.get_setting('dialogic/animations/join_default_wait', true)
+		if action == Actions.JOIN:
+			animation_name = ProjectSettings.get_setting('dialogic/animations/join_default', "Fade In Up")
+			animation_length = dialogic.Portraits._get_join_default_length()
+			animation_wait = ProjectSettings.get_setting('dialogic/animations/join_default_wait', true)
+		elif action == Actions.LEAVE:
+			animation_name = ProjectSettings.get_setting('dialogic/animations/leave_default', "Fade In Up")
+			animation_length = dialogic.Portraits._get_leave_default_length()
+			animation_wait = ProjectSettings.get_setting('dialogic/animations/leave_default_wait', true)
 
 	# Calculate animation time (can be shortened during skipping)
 	var final_animation_length: float = animation_length
