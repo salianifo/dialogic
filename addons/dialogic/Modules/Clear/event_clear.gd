@@ -7,6 +7,7 @@ extends DialogicEvent
 
 var time := 1.0
 var step_by_step := true
+var wait := true
 
 var clear_textbox := true
 var clear_portraits := true
@@ -88,7 +89,7 @@ func _execute() -> void:
 	if clear_portrait_positions and dialogic.has_subsystem('Portraits'):
 		dialogic.PortraitContainers.reset_all_containers()
 
-	if not step_by_step:
+	if not step_by_step and wait:
 		await dialogic.get_tree().create_timer(final_time).timeout
 
 	finish()
@@ -118,6 +119,7 @@ func get_shortcode_parameters() -> Dictionary:
 		#param_name : property_info
 		"time"		: {"property": "time",	 			"default": ""},
 		"step"		: {"property": "step_by_step", 		"default": true},
+		"wait"		: {"property": "wait", 		"default": true},
 		"text"		: {"property": "clear_textbox",		"default": true},
 		"portraits"	: {"property": "clear_portraits", 	"default": true},
 		"music"		: {"property": "clear_music", 		"default": true},
@@ -142,6 +144,7 @@ func build_event_editor() -> void:
 	add_body_edit('time', ValueType.NUMBER, {'left_text':'Time:'})
 
 	add_body_edit('step_by_step', ValueType.BOOL, {'left_text':'Step by Step:'}, 'time > 0')
+	add_body_edit('wait', ValueType.BOOL, {'left_text':'Wait for Completion:'}, 'time > 0 and not step_by_step')
 	add_body_line_break()
 
 	add_body_edit('clear_textbox', ValueType.BOOL_BUTTON, {'left_text':'Clear:', 'icon':load("res://addons/dialogic/Modules/Clear/clear_textbox.svg"), 'tooltip':'Clear Textbox'})
