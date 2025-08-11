@@ -32,6 +32,10 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 	var portraits_info: Dictionary = dialogic.current_state_info.portraits.duplicate()
 	dialogic.current_state_info.portraits = {}
 	for character_path in portraits_info:
+		if portraits_info[character_path].has("extra_data"):
+			dialogic.current_state_info.portraits[character_path] = {
+				"extra_data": portraits_info[character_path]["extra_data"]
+			}
 		if not portraits_info[character_path].has("portrait"):
 			continue
 		var character_info: Dictionary = portraits_info[character_path]
@@ -47,7 +51,7 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 
 		if load_status == ResourceLoader.THREAD_LOAD_LOADED:
 			character = ResourceLoader.load_threaded_get(character_path)
-			add_character(character, container, character_info.portrait, character_info.position_id)
+			await add_character(character, container, character_info.portrait, character_info.position_id)
 			change_character_mirror(character, character_info.get('custom_mirror', false))
 			change_character_z_index(character, character_info.get('z_index', 0))
 			change_character_extradata(character, character_info.get('extra_data', ""))
