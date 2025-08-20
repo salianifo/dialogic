@@ -278,8 +278,8 @@ func build_event_editor() -> void:
 		'tooltip'			: 'Use an existing channel or type the name for a new channel.',
 	})
 
-	add_header_button('', _open_audio_settings, 'Edit Audio Channels',
-		editor_node.get_theme_icon("ExternalLink", "EditorIcons"))
+	#add_header_button('', _open_audio_settings, 'Edit Audio Channels',
+		#editor_node.get_theme_icon("ExternalLink", "EditorIcons"))
 
 	add_body_edit("set_fade_length", ValueType.BOOL_BUTTON,{
 			"editor_icon"	: ["FadeCross", "EditorIcons"],
