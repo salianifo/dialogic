@@ -752,7 +752,7 @@ func change_speaker(speaker: DialogicCharacter = null, portrait := "") -> void:
 
 	var prev_speaker: DialogicCharacter = dialogic.Text.get_current_speaker()
 	if speaker != prev_speaker:
-		if is_character_joined(prev_speaker):
+		if is_character_joined(prev_speaker) and dialogic.current_state_info["portraits"][prev_speaker.resource_path].node.get_child_count() > 0:
 			dialogic.current_state_info["portraits"][prev_speaker.resource_path].node.get_child(-1)._unhighlight()
 
 		if is_character_joined(speaker):
