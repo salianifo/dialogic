@@ -17,6 +17,12 @@ func _register() -> void:
 
 	# register editor
 	editors_manager.register_resource_editor('dtl', self)
+	# stop audio previews button
+	var stop_previews_button: Button = editors_manager.add_icon_button(
+		load("res://addons/dialogic/Modules/Clear/clear_music.svg"),
+		"Stop Audio Previews",
+		self)
+	stop_previews_button.pressed.connect(_on_stop_previews_button_pressed)
 	# add timeline button
 	var add_timeline_button: Button = editors_manager.add_icon_button(
 		load("res://addons/dialogic/Editor/Images/Toolbar/add-timeline.svg"),
@@ -204,6 +210,9 @@ func _ready() -> void:
 	%SearchReplaceSection.hide()
 	%SearchReplaceSection.add_theme_stylebox_override("panel", get_theme_stylebox("PanelForeground", "EditorStyles"))
 
+
+func _on_stop_previews_button_pressed() -> void:
+	get_tree().call_group("audio_preview_field", "_stop")
 
 func _on_create_timeline_button_pressed() -> void:
 	editors_manager.show_add_resource_dialog(

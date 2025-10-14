@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://lnr24bngydn2" path="res://addons/dialogic/Editor/Events/Fields/field_audio_preview.gd" id="1_7wm54"]
 
-[node name="Field_Audio_Preview" type="Button"]
+[node name="Field_Audio_Preview" type="Button" groups=["audio_preview_field"]]
 offset_right = 8.0
 offset_bottom = 8.0
 flat = true
