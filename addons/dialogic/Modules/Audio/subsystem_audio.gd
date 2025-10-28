@@ -198,7 +198,8 @@ func update_audio(channel_name:= "", path := "", settings_overrides := {}) -> vo
 func is_channel_playing(channel_name: String) -> bool:
 	return (current_audio_channels.has(channel_name)
 		and is_instance_valid(current_audio_channels[channel_name])
-		and current_audio_channels[channel_name].is_playing())
+		and (current_audio_channels[channel_name].is_playing()
+			or current_audio_channels[channel_name].stream_paused))
 
 
 ## Stops audio on all channels.

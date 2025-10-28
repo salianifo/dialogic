@@ -20,10 +20,22 @@ func _execute() -> void:
 	if slot_name.is_empty():
 		if dialogic.Save.get_latest_slot():
 			dialogic.Save.save(dialogic.Save.get_latest_slot())
+			dialogic.Save.set_slot_info(dialogic.Save.get_latest_slot(), {
+				"save_date": Time.get_datetime_dict_from_system(),
+				"play_time": Dialogic.current_state_info.get_or_add("play_time", 0.0),
+			})
 		else:
 			dialogic.Save.save()
+			dialogic.Save.set_slot_info("", {
+				"save_date": Time.get_datetime_dict_from_system(),
+				"play_time": Dialogic.current_state_info.get_or_add("play_time", 0.0),
+			})
 	else:
 		dialogic.Save.save(slot_name)
+		dialogic.Save.set_slot_info("", {
+			"save_date": Time.get_datetime_dict_from_system(),
+			"play_time": Dialogic.current_state_info.get_or_add("play_time", 0.0),
+		})
 	finish()
 
 

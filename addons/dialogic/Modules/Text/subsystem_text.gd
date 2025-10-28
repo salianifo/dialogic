@@ -163,6 +163,11 @@ func update_dialog_text(text: String, instant := false, additional := false) -> 
 		if text_node.enabled and (text_node == text_node.textbox_root or text_node.textbox_root.is_visible_in_tree()):
 
 			if instant:
+				if text_node.alignment == DialogicNode_DialogText.Alignment.CENTER:
+					text = '[center]'+text
+				elif text_node.alignment == DialogicNode_DialogText.Alignment.RIGHT:
+					text = '[right]'+text
+
 				text_node.text = text
 
 			else:
