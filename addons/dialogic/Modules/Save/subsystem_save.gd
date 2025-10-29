@@ -221,7 +221,7 @@ func load_file(slot_name: String, file_name: String, default: Variant) -> Varian
 			file = FileAccess.open_encrypted_with_pass(path, FileAccess.READ, encryption_password)
 
 		if file:
-			return file.get_var()
+			return file.get_var(true)
 		else:
 			push_error(FileAccess.get_open_error())
 	return default
