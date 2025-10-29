@@ -32,7 +32,7 @@ func _execute() -> void:
 			})
 	else:
 		dialogic.Save.save(slot_name)
-		dialogic.Save.set_slot_info("", {
+		dialogic.Save.set_slot_info(slot_name, {
 			"save_date": Time.get_datetime_dict_from_system(),
 			"play_time": Dialogic.current_state_info.get_or_add("play_time", 0.0),
 		})
