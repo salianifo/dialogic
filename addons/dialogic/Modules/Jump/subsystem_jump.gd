@@ -79,7 +79,7 @@ func jump_to_label(label:String) -> void:
 
 
 func push_to_jump_stack() -> void:
-	dialogic.current_state_info['jump_stack'].push_back({'timeline':dialogic.current_timeline, 'index':dialogic.current_event_idx, 'label':dialogic.current_timeline_events[dialogic.current_event_idx].label_name})
+	dialogic.current_state_info['jump_stack'].push_back({'timeline':dialogic.current_timeline.resource_path, 'index':dialogic.current_event_idx, 'label':dialogic.current_timeline_events[dialogic.current_event_idx].label_name})
 
 
 func resume_from_last_jump() -> void:
