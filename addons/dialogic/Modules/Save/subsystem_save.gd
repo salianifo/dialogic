@@ -183,6 +183,19 @@ func save_file(slot_name: String, file_name: String, data: Variant) -> Error:
 
 	if file:
 		file.store_var(data)
+		#return OK
+	else:
+		var error := FileAccess.get_open_error()
+		push_error("[Dialogic Error]: Could not save slot to file. Error: %d '%s'" % [error, error_string(error)])
+		return error
+
+	if encryption_password.is_empty():
+		file = FileAccess.open(SAVE_SLOTS_DIR.path_join(slot_name).path_join("text_" + file_name), FileAccess.WRITE)
+	else:
+		file = FileAccess.open_encrypted_with_pass(SAVE_SLOTS_DIR.path_join(slot_name).path_join("text_" + file_name), FileAccess.WRITE, encryption_password)
+
+	if file:
+		file.store_string(JSON.stringify(data, "\t"))
 		return OK
 	else:
 		var error := FileAccess.get_open_error()
