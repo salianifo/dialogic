@@ -182,7 +182,7 @@ func save_file(slot_name: String, file_name: String, data: Variant) -> Error:
 		file = FileAccess.open_encrypted_with_pass(SAVE_SLOTS_DIR.path_join(slot_name).path_join(file_name), FileAccess.WRITE, encryption_password)
 
 	if file:
-		file.store_var(data)
+		file.store_var(data, true)
 		#return OK
 	else:
 		var error := FileAccess.get_open_error()
