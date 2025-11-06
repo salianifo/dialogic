@@ -85,8 +85,9 @@ func is_voiced(index: int) -> bool:
 ## Requires [method set_file] to be called before or nothing plays.
 func play_voice() -> void:
 	voice_player.play()
-	finish_timer.wait_time = voice_player.stream.get_length()
-	finish_timer.start()
+	if voice_player.stream:
+		finish_timer.wait_time = voice_player.stream.get_length()
+		finish_timer.start()
 	voiceline_started.emit({'file': current_audio_file})
 
 
