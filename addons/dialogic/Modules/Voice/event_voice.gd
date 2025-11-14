@@ -79,4 +79,9 @@ func build_event_editor() -> void:
 			'editor_icon' 	: ["AudioStreamPlayer", "EditorIcons"]})
 	add_header_edit('file_path', ValueType.AUDIO_PREVIEW)
 	add_body_edit('volume', ValueType.NUMBER, {'left_text':'Volume:', 'mode':2}, '!file_path.is_empty()')
-	add_body_edit('audio_bus', ValueType.SINGLELINE_TEXT, {'left_text':'Audio Bus:'}, '!file_path.is_empty()')
+	add_body_edit('audio_bus', ValueType.DYNAMIC_OPTIONS, {
+		'left_text':'Audio Bus:',
+		'placeholder'		: 'Master',
+		'mode'				: 2,
+		'suggestions_func' 	: DialogicUtil.get_audio_bus_suggestions,
+	}, '!file_path.is_empty()')
