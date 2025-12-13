@@ -37,6 +37,9 @@ signal voiceline_stopped(info: Dictionary)
 ## The current audio file being played.
 var current_audio_file: String
 
+## Disable Mouthflaps
+var disable_mouthflaps := false
+
 ## The audio player for the voiceline.
 var voice_player := AudioStreamPlayer.new()
 
@@ -88,7 +91,8 @@ func play_voice() -> void:
 	if voice_player.stream:
 		finish_timer.wait_time = voice_player.stream.get_length()
 		finish_timer.start()
-	voiceline_started.emit({'file': current_audio_file})
+	if not disable_mouthflaps:
+		voiceline_started.emit({'file': current_audio_file})
 
 
 ## Set a voice file [param path] to be played, then invoke [method play_voice].
@@ -111,6 +115,11 @@ func set_volume(value: float) -> void:
 ## Set the voice player's bus to a [param bus_name].
 func set_bus(bus_name: String) -> void:
 	voice_player.bus = bus_name
+
+
+## Set the voice player's bus to a [param bus_name].
+func set_disable_mouthflaps(value: bool) -> void:
+	disable_mouthflaps = value
 
 
 ## Stops the current voice line from playing.

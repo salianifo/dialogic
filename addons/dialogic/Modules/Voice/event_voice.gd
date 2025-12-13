@@ -17,6 +17,8 @@ var file_path := "":
 var volume: float = 0
 ## The audio bus to play the sound on.
 var audio_bus := "Master"
+## Disable mouthflaps
+var disable_mouthflaps := false
 
 
 ################################################################################
@@ -34,6 +36,7 @@ func _execute() -> void:
 	dialogic.Voice.set_file(file_path)
 	dialogic.Voice.set_volume(volume)
 	dialogic.Voice.set_bus(audio_bus)
+	dialogic.Voice.set_disable_mouthflaps(disable_mouthflaps)
 	finish()
 	# the rest is executed by a text event
 
@@ -62,7 +65,8 @@ func get_shortcode_parameters() -> Dictionary:
 		#param_name : property_info
 		"path"		: {"property": "file_path", "default": ""},
 		"volume"	: {"property": "volume", 	"default": 0},
-		"bus"		: {"property": "audio_bus", "default": "Master"}
+		"bus"		: {"property": "audio_bus", "default": "Master"},
+		"disable_mouthflaps"		: {"property": "disable_mouthflaps", "default": false}
 	}
 
 
@@ -85,3 +89,4 @@ func build_event_editor() -> void:
 		'mode'				: 2,
 		'suggestions_func' 	: DialogicUtil.get_audio_bus_suggestions,
 	}, '!file_path.is_empty()')
+	add_body_edit('disable_mouthflaps', ValueType.BOOL, {'left_text':'Disable Mouthflaps:'}, '!file_path.is_empty()')
