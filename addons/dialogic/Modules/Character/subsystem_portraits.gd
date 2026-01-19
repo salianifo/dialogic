@@ -14,6 +14,9 @@ signal character_moved(info:Dictionary)
 ## The default portrait scene.
 var default_portrait_scene: PackedScene = load(get_script().resource_path.get_base_dir().path_join('default_portrait.tscn'))
 
+## Secondary Z-Index because Kachie didn't think ti was important to set the Z-Index
+var join_index: int = 0
+
 
 #region STATE
 ####################################################################################################
@@ -22,16 +25,27 @@ func clear_game_state(_clear_flag:=DialogicGameHandler.ClearFlags.FULL_CLEAR) ->
 	for character in dialogic.current_state_info.get('portraits', {}).keys():
 		remove_character(load(character))
 	dialogic.current_state_info['portraits'] = {}
+	dialogic.current_state_info['portrait_join_index'] = 0
+	join_index = 0
 
 
 func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 	if not "portraits" in dialogic.current_state_info:
 		dialogic.current_state_info["portraits"] = {}
 
+	join_index = dialogic.current_state_info.get('portrait_join_index', 0)
+
 	# Load Position Portraits
 	var portraits_info: Dictionary = dialogic.current_state_info.portraits.duplicate()
+	var join_order: Dictionary = {}
 	dialogic.current_state_info.portraits = {}
 	for character_path in portraits_info:
+		join_order[portraits_info[character_path].join_index] = character_path
+
+	var sorted_join_keys := join_order.keys()
+	sorted_join_keys.sort()
+	for key in sorted_join_keys:
+		var character_path: String = join_order[key]
 		if portraits_info[character_path].has("extra_data"):
 			dialogic.current_state_info.portraits[character_path] = {
 				"extra_data": portraits_info[character_path]["extra_data"]
@@ -419,7 +433,9 @@ func join_character(character:DialogicCharacter, portrait:String,  position_id:S
 	if character_node == null:
 		return null
 
-	dialogic.current_state_info['portraits'][character.resource_path] = {'portrait':portrait, 'node':character_node, 'position_id':position_id, 'custom_mirror':mirrored}
+	dialogic.current_state_info['portraits'][character.resource_path] = {'portrait':portrait, 'node':character_node, 'position_id':position_id, 'custom_mirror':mirrored, 'join_index': join_index}
+	join_index += 1
+	dialogic.current_state_info['portrait_join_index'] = join_index
 
 	if character.persist_extra_data and not previous_extra_data.is_empty():
 		_change_portrait_extradata(character_node, previous_extra_data)
