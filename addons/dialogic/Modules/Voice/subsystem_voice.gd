@@ -49,6 +49,10 @@ var finish_timer := Timer.new()
 #region STATE
 ####################################################################################################
 
+func clear_game_state(clear_flag:=Dialogic.ClearFlags.FULL_CLEAR) -> void:
+	stop_audio()
+
+
 ## Stops the current voice from playing.
 func pause() -> void:
 	voice_player.stream_paused = true
