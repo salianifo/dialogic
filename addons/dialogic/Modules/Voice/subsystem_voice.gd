@@ -56,11 +56,13 @@ func clear_game_state(clear_flag:=Dialogic.ClearFlags.FULL_CLEAR) -> void:
 ## Stops the current voice from playing.
 func pause() -> void:
 	voice_player.stream_paused = true
+	finish_timer.paused = true
 
 
 ## Resumes a paused voice.
 func resume() -> void:
 	voice_player.stream_paused = false
+	finish_timer.paused = false
 
 #endregion
 
