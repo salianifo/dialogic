@@ -131,6 +131,11 @@ func update_audio(channel_name:= "", path := "", settings_overrides := {}) -> vo
 
 	dialogic.current_state_info['audio'][channel_name] = {'path':path, 'settings_overrides':settings_overrides}
 	audio_started.emit(dialogic.current_state_info['audio'][channel_name])
+	
+	if channel_name == "music":
+		var unlocked_music: Dictionary = dialogic.Save.get_global_info("unlocked_music", {})
+		unlocked_music[path] = true
+		dialogic.Save.set_global_info("unlocked_music", unlocked_music)
 
 	var new_player := AudioStreamPlayer.new()
 	if channel_name:
