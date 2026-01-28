@@ -40,6 +40,8 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 	var join_order: Dictionary = {}
 	dialogic.current_state_info.portraits = {}
 	for character_path in portraits_info:
+		if not portraits_info[character_path].has("portrait"):
+			continue
 		join_order[portraits_info[character_path].join_index] = character_path
 
 	var sorted_join_keys := join_order.keys()
