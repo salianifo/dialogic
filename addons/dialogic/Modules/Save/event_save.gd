@@ -23,18 +23,21 @@ func _execute() -> void:
 			dialogic.Save.set_slot_info(dialogic.Save.get_latest_slot(), {
 				"save_date": Time.get_datetime_dict_from_system(),
 				"play_time": Dialogic.current_state_info.get_or_add("play_time", 0.0),
+				"chapter": Dialogic.VAR.get_variable("AUGGAProgress"),
 			})
 		else:
 			dialogic.Save.save()
 			dialogic.Save.set_slot_info("", {
 				"save_date": Time.get_datetime_dict_from_system(),
 				"play_time": Dialogic.current_state_info.get_or_add("play_time", 0.0),
+				"chapter": Dialogic.VAR.get_variable("AUGGAProgress"),
 			})
 	else:
 		dialogic.Save.save(slot_name)
 		dialogic.Save.set_slot_info(slot_name, {
 			"save_date": Time.get_datetime_dict_from_system(),
 			"play_time": Dialogic.current_state_info.get_or_add("play_time", 0.0),
+			"chapter": Dialogic.VAR.get_variable("AUGGAProgress"),
 		})
 	finish()
 
