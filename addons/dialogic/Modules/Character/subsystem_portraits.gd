@@ -40,6 +40,10 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 	var join_order: Dictionary = {}
 	dialogic.current_state_info.portraits = {}
 	for character_path in portraits_info:
+		if portraits_info[character_path].has("extra_data"):
+			dialogic.current_state_info.portraits[character_path] = {
+				"extra_data": portraits_info[character_path]["extra_data"]
+			}
 		if not portraits_info[character_path].has("portrait"):
 			continue
 		join_order[portraits_info[character_path].join_index] = character_path
@@ -48,10 +52,6 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 	sorted_join_keys.sort()
 	for key in sorted_join_keys:
 		var character_path: String = join_order[key]
-		if portraits_info[character_path].has("extra_data"):
-			dialogic.current_state_info.portraits[character_path] = {
-				"extra_data": portraits_info[character_path]["extra_data"]
-			}
 		if not portraits_info[character_path].has("portrait"):
 			continue
 		var character_info: Dictionary = portraits_info[character_path]
