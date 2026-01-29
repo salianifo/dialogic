@@ -171,6 +171,9 @@ var Video := preload("res://addons/dialogic_additions/Video/subsystem_video.gd")
 var Voice := preload("res://addons/dialogic/Modules/Voice/subsystem_voice.gd").new():
 	get: return get_subsystem("Voice")
 
+var Wait := preload("res://addons/dialogic/Modules/Wait/subsystem_wait.gd").new():
+	get: return get_subsystem("Wait")
+
 #endregion
 
 
