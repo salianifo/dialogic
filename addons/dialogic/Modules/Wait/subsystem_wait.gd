@@ -14,13 +14,13 @@ func clear_game_state(clear_flag:=Dialogic.ClearFlags.FULL_CLEAR) -> void:
 
 ## Stops the current voice from playing.
 func pause() -> void:
-	if is_instance_valid(_tween):
+	if is_instance_valid(_tween) and _tween.is_valid() and _tween.is_running():
 		_tween.pause()
 
 
 ## Resumes a paused voice.
 func resume() -> void:
-	if is_instance_valid(_tween):
+	if is_instance_valid(_tween) and _tween.is_valid():
 		_tween.play()
 
 #endregion

@@ -46,7 +46,7 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 			}
 		if not portraits_info[character_path].has("portrait"):
 			continue
-		join_order[portraits_info[character_path].join_index] = character_path
+		join_order[portraits_info[character_path]["join_index"]] = character_path
 
 	var sorted_join_keys := join_order.keys()
 	sorted_join_keys.sort()
