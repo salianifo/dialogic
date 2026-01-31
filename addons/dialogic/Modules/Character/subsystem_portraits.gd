@@ -46,6 +46,7 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 			}
 		if not portraits_info[character_path].has("portrait"):
 			continue
+
 		join_order[portraits_info[character_path]["join_index"]] = character_path
 
 	var sorted_join_keys := join_order.keys()
@@ -71,6 +72,7 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 			change_character_mirror(character, character_info.get('custom_mirror', false))
 			change_character_z_index(character, character_info.get('z_index', 0))
 			change_character_extradata(character, character_info.get('extra_data', ""))
+			dialogic.current_state_info['portraits'][character_path]["join_index"] = key
 		else:
 			push_error('[Dialogic] Failed to load character "' + str(character_path) + '".')
 
