@@ -2,26 +2,23 @@ extends DialogicSubsystem
 ## Subsystem that manages wait events.
 
 
-var _timer: Timer
+signal _timeout
+
+var _timer: Timer = Timer.new()
 
 #region STATE
 ####################################################################################################
 
 func clear_game_state(clear_flag:=Dialogic.ClearFlags.FULL_CLEAR) -> void:
-	if is_instance_valid(_timer):
-		_timer.queue_free()
+	_timer.stop()
 
 
-## Stops the current voice from playing.
 func pause() -> void:
-	if is_instance_valid(_timer):
-		_timer.paused = true
+	_timer.paused = true
 
 
-## Resumes a paused voice.
 func resume() -> void:
-	if is_instance_valid(_timer):
-		_timer.paused = false
+	_timer.paused = false
 
 #endregion
 
@@ -29,7 +26,15 @@ func resume() -> void:
 #region MAIN METHODS
 ####################################################################################################
 
-func update_wait(time: float, hide_text: bool, skippable: bool, callback: Callable) -> void:
+func _ready() -> void:
+	_timer.one_shot = true
+	if DialogicUtil.is_physics_timer():
+		_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
+	add_child(_timer)
+	_timer.timeout.connect(_timeout.emit)
+
+
+func update_wait(time: float, hide_text: bool, skippable: bool) -> void:
 	var final_wait_time := time
 
 	if dialogic.Inputs.auto_skip.enabled:
@@ -42,15 +47,14 @@ func update_wait(time: float, hide_text: bool, skippable: bool, callback: Callab
 		dialogic.Text.update_dialog_text('', true)
 		dialogic.Text.hide_textbox()
 
-	_timer = Timer.new()
-	_timer.one_shot = true
-	if DialogicUtil.is_physics_timer():
-		_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
-	add_child(_timer)
-	_timer.start(final_wait_time)
-	_timer.timeout.connect(callback.bind(_timer))
-	
 	if skippable:
-		dialogic.Inputs.dialogic_action.connect(callback.bind(_timer))
+		dialogic.Inputs.dialogic_action.connect(_timeout.emit)
+
+	_timer.start(final_wait_time)
+	await _timeout
+	_timer.stop()
+
+	if skippable:
+		dialogic.Inputs.dialogic_action.disconnect(_timeout.emit)
 
 #endregion

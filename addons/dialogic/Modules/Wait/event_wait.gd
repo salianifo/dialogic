@@ -20,22 +20,13 @@ var skippable := false
 ################################################################################
 
 func _execute() -> void:
-	dialogic.Wait.update_wait(time, hide_text, skippable, _on_finish)
+	await dialogic.Wait.update_wait(time, hide_text, skippable)
 
-
-func _on_finish(timer: Timer) -> void:
-	if is_instance_valid(timer):
-		timer.queue_free()
-	
-	if skippable:
-		dialogic.Inputs.dialogic_action.disconnect(_on_finish)
-	
 	if dialogic.Animations.is_animating():
 		dialogic.Animations.stop_animation()
 	dialogic.current_state = dialogic.States.IDLE
 
 	finish()
-
 
 ################################################################################
 ## 						INITIALIZE
