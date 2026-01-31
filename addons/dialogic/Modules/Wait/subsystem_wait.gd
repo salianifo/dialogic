@@ -2,26 +2,26 @@ extends DialogicSubsystem
 ## Subsystem that manages wait events.
 
 
-var _tween: Tween
+var _timer: Timer
 
 #region STATE
 ####################################################################################################
 
 func clear_game_state(clear_flag:=Dialogic.ClearFlags.FULL_CLEAR) -> void:
-	if is_instance_valid(_tween):
-		_tween.kill()
+	if is_instance_valid(_timer):
+		_timer.queue_free()
 
 
 ## Stops the current voice from playing.
 func pause() -> void:
-	if is_instance_valid(_tween) and _tween.is_valid() and _tween.is_running():
-		_tween.pause()
+	if is_instance_valid(_timer):
+		_timer.paused = true
 
 
 ## Resumes a paused voice.
 func resume() -> void:
-	if is_instance_valid(_tween) and _tween.is_valid():
-		_tween.play()
+	if is_instance_valid(_timer):
+		_timer.paused = false
 
 #endregion
 
@@ -42,12 +42,15 @@ func update_wait(time: float, hide_text: bool, skippable: bool, callback: Callab
 		dialogic.Text.update_dialog_text('', true)
 		dialogic.Text.hide_textbox()
 
-	_tween = dialogic.get_tree().create_tween()
+	_timer = Timer.new()
+	_timer.one_shot = true
 	if DialogicUtil.is_physics_timer():
-		_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
-	_tween.tween_callback(callback.bind(_tween)).set_delay(final_wait_time)
+		_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
+	add_child(_timer)
+	_timer.start(final_wait_time)
+	_timer.timeout.connect(callback.bind(_timer))
 	
 	if skippable:
-		dialogic.Inputs.dialogic_action.connect(callback.bind(_tween))
+		dialogic.Inputs.dialogic_action.connect(callback.bind(_timer))
 
 #endregion
