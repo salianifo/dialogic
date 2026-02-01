@@ -290,6 +290,8 @@ static func guess_special_resource(type: String, string: String, default := {}, 
 		for i in resources.values():
 			if i.path == string:
 				return i
+			elif i.path == string + 'c':
+				return i
 		printerr("[Dialogic] Unable to find ", type, " at path '", string, "'.")
 		return default
 

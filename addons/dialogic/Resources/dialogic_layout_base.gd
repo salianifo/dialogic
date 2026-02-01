@@ -1,6 +1,6 @@
 @tool
 class_name DialogicLayoutBase
-extends Node
+extends CanvasLayer
 
 ## Base class that should be extended by custom layouts.
 
@@ -9,11 +9,6 @@ extends Node
 func add_layer(layer:DialogicLayoutLayer) -> Node:
 	add_child(layer)
 	return layer
-
-
-## Method that returns the given child
-func get_layer(index:int) -> Node:
-	return get_child(index)
 
 
 ## Method to return all the layers
