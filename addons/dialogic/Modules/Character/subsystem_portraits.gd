@@ -68,11 +68,12 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 
 		if load_status == ResourceLoader.THREAD_LOAD_LOADED:
 			character = ResourceLoader.load_threaded_get(character_path)
-			await add_character(character, container, character_info.portrait, character_info.position_id)
+			var character_node := await add_character(character, container, character_info.portrait, character_info.position_id)
 			change_character_mirror(character, character_info.get('custom_mirror', false))
 			change_character_z_index(character, character_info.get('z_index', 0))
 			change_character_extradata(character, character_info.get('extra_data', ""))
 			dialogic.current_state_info['portraits'][character_path]["join_index"] = key
+			dialogic.current_state_info["portraits"][character_path]["node"] = character_node
 		else:
 			push_error('[Dialogic] Failed to load character "' + str(character_path) + '".')
 
@@ -82,17 +83,21 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 		dialogic.current_state_info["speaker"] = ""
 		change_speaker(DialogicResourceUtil.get_character_resource(speaker))
 	dialogic.current_state_info["speaker"] = speaker
+	
+	await get_tree().process_frame
+	await get_tree().process_frame
+	dialogic.current_state_info["portraits"][DialogicResourceUtil.get_character_resource(speaker).resource_path]["node"].get_child(0)._on_voiceline_started({})
 
 
 func pause() -> void:
 	for portrait in dialogic.current_state_info['portraits'].values():
-		if portrait.has("portrait") and portrait.node.has_meta('animation_node'):
+		if portrait.has("portrait") and portrait.has("node") and portrait.node.has_meta('animation_node'):
 			portrait.node.get_meta('animation_node').pause()
 
 
 func resume() -> void:
 	for portrait in dialogic.current_state_info['portraits'].values():
-		if portrait.has("portrait") and portrait.node.has_meta('animation_node'):
+		if portrait.has("portrait") and portrait.has("node") and portrait.node.has_meta('animation_node'):
 			portrait.node.get_meta('animation_node').resume()
 
 

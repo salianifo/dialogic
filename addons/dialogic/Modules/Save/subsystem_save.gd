@@ -111,7 +111,10 @@ func save(slot_name := "", is_autosave := false, thumbnail_mode := ThumbnailMode
 
 	set_latest_slot(slot_name)
 
-	var save_error := save_file(slot_name, 'state.txt', dialogic.get_full_state())
+	var game_state := dialogic.get_full_state()
+	for key: String in game_state["portraits"].keys():
+		game_state["portraits"][key].erase("node")
+	var save_error := save_file(slot_name, 'state.txt', game_state)
 
 	if save_error:
 		return save_error

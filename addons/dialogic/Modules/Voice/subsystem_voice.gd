@@ -93,6 +93,8 @@ func is_voiced(index: int) -> bool:
 ## Plays the voice line. This will be invoked by Dialogic.
 ## Requires [method set_file] to be called before or nothing plays.
 func play_voice() -> void:
+	if dialogic.paused:
+		await dialogic.dialogic_resumed
 	voice_player.play()
 	if voice_player.stream:
 		finish_timer.wait_time = voice_player.stream.get_length()
