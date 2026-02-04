@@ -83,10 +83,6 @@ func load_game_state(_load_flag:=LoadFlags.FULL_LOAD) -> void:
 		dialogic.current_state_info["speaker"] = ""
 		change_speaker(DialogicResourceUtil.get_character_resource(speaker))
 	dialogic.current_state_info["speaker"] = speaker
-	
-	await get_tree().process_frame
-	await get_tree().process_frame
-	dialogic.current_state_info["portraits"][DialogicResourceUtil.get_character_resource(speaker).resource_path]["node"].get_child(0)._on_voiceline_started({})
 
 
 func pause() -> void:
