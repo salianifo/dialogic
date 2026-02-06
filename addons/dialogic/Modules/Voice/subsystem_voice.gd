@@ -51,6 +51,7 @@ var finish_timer := Timer.new()
 
 func clear_game_state(clear_flag:=Dialogic.ClearFlags.FULL_CLEAR) -> void:
 	stop_audio()
+	voice_player.stream = null
 
 
 ## Stops the current voice from playing.
