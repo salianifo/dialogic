@@ -54,6 +54,9 @@ func load_game_state(load_flag:=LoadFlags.FULL_LOAD) -> void:
 
 ## Pauses playing audio.
 func pause() -> void:
+	if dialogic.loading_active:
+		return
+	
 	for child in audio_node.get_children():
 		child.stream_paused = true
 	for child in one_shot_audio_node.get_children():

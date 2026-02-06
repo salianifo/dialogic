@@ -48,6 +48,8 @@ var current_state := States.IDLE:
 ## Emitted when [member current_state] change.
 signal state_changed(new_state:States)
 
+var loading_active: bool = false
+
 ## When `true`, many dialogic processes won't continue until it's `false` again.
 var paused := false:
 	set(value):
