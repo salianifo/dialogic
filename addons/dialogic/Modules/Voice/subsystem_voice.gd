@@ -35,7 +35,9 @@ signal voiceline_stopped(info: Dictionary)
 
 
 ## The current audio file being played.
-var current_audio_file: String
+#var current_audio_file: String
+
+var current_voice_settings: Dictionary = {}
 
 ## Disable Mouthflaps
 var disable_mouthflaps := false
@@ -52,14 +54,21 @@ var finish_timer := Timer.new()
 func clear_game_state(clear_flag:=Dialogic.ClearFlags.FULL_CLEAR) -> void:
 	stop_audio()
 	voice_player.stream = null
+	current_voice_settings = {}
 
 
 func load_game_state(load_flag:=LoadFlags.FULL_LOAD) -> void:
 	if load_flag == LoadFlags.ONLY_DNODES:
 		return
 
-	if dialogic.current_state_info.has("current_voice_line"):
-		set_file(dialogic.current_state_info["current_voice_line"])
+	if dialogic.current_state_info.has("current_voice_settings"):
+		var settings = dialogic.current_state_info["current_voice_settings"]
+		
+		set_file(settings["file"])
+		set_bus(settings["bus"])
+		set_volume(settings["volume"])
+		set_disable_mouthflaps(settings["disable_mouthflaps"])
+
 		if is_voiced(dialogic.current_state_info["current_event_idx"]):
 			await play_voice()
 
@@ -74,6 +83,10 @@ func load_game_state(load_flag:=LoadFlags.FULL_LOAD) -> void:
 					if node.name == dialogic.current_state_info["speaker"]:
 						node.get_child(0)._on_voiceline_started({})
 						break
+
+			await voiceline_finished
+
+			dialogic.Inputs.auto_advance.enabled_forced = true
 
 
 ## Stops the current voice from playing.
@@ -123,41 +136,47 @@ func play_voice() -> void:
 		finish_timer.wait_time = voice_player.stream.get_length()
 		finish_timer.start()
 	if not disable_mouthflaps:
-		voiceline_started.emit({'file': current_audio_file})
+		voiceline_started.emit({'file': current_voice_settings.get("file", "")})
 
 
 ## Set a voice file [param path] to be played, then invoke [method play_voice].
 ##
 ## This method does not check if [param path] is a valid file.
 func set_file(path: String) -> void:
-	if current_audio_file == path:
+	if current_voice_settings.get("file", "") == path:
 		return
 
-	current_audio_file = path
-	dialogic.current_state_info['current_voice_line'] = current_audio_file
+	current_voice_settings["file"] = path
+	dialogic.current_state_info['current_voice_settings']["file"] = path
 	var audio: AudioStream = load(path)
 	voice_player.stream = audio
 
 
 ## Set the volume to a [param value] in decibels.
 func set_volume(value: float) -> void:
+	current_voice_settings["volume"] = value
+	dialogic.current_state_info['current_voice_settings']["volume"] = value
 	voice_player.volume_db = value
 
 
 ## Set the voice player's bus to a [param bus_name].
 func set_bus(bus_name: String) -> void:
+	current_voice_settings["bus"] = bus_name
+	dialogic.current_state_info['current_voice_settings']["bus"] = bus_name
 	voice_player.bus = bus_name
 
 
 ## Set the voice player's bus to a [param bus_name].
 func set_disable_mouthflaps(value: bool) -> void:
+	current_voice_settings["disable_mouthflaps"] = value
+	dialogic.current_state_info['current_voice_settings']["disable_mouthflaps"] = value
 	disable_mouthflaps = value
 
 
 ## Stops the current voice line from playing.
 func stop_audio() -> void:
 	if voice_player.playing or finish_timer.time_left > 0:
-		voiceline_stopped.emit({'file':current_audio_file, 'remaining_time':get_remaining_time()})
+		voiceline_stopped.emit({'file':current_voice_settings.get("file", ""), 'remaining_time':get_remaining_time()})
 
 	finish_timer.stop()
 	voice_player.stop()
@@ -166,7 +185,7 @@ func stop_audio() -> void:
 ## Called when the voice line finishes playing.
 ## Connected to [signal finished] on [member voice_player]
 func _on_voice_finished() -> void:
-	voiceline_finished.emit({'file':current_audio_file, 'remaining_time':get_remaining_time()})
+	voiceline_finished.emit({'file':current_voice_settings.get("file", ""), 'remaining_time':get_remaining_time()})
 
 
 ## Returns the remaining time of the current voice line in seconds.

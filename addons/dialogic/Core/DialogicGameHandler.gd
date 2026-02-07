@@ -412,16 +412,16 @@ func load_full_state(state_info:Dictionary) -> void:
 				continue
 			(subsystem as DialogicSubsystem).load_game_state()
 
+	if current_state_info.get('current_timeline', null):
+		start_timeline(current_state_info.current_timeline, current_state_info.get('current_event_idx', 0))
+	else:
+		end_timeline.call_deferred(true)
+
 	if null != scene and not scene.is_node_ready():
 		scene.ready.connect(load_subsystems)
 	else:
 		await get_tree().process_frame
 		load_subsystems.call()
-
-	if current_state_info.get('current_timeline', null):
-		start_timeline(current_state_info.current_timeline, current_state_info.get('current_event_idx', 0))
-	else:
-		end_timeline.call_deferred(true)
 #endregion
 
 
