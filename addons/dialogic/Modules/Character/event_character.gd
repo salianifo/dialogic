@@ -142,6 +142,9 @@ func _execute() -> void:
 
 	# LEAVE -------------------------------------
 	elif action == Actions.LEAVE:
+		if dialogic.loading_active:
+			await dialogic.dialogic_resumed
+
 		if character_identifier == '--All--':
 			if dialogic.has_subsystem('History') and len(dialogic.Portraits.get_joined_characters()):
 				dialogic.History.store_simple_history_entry("Everyone left", event_name, {'character': "All", 'mode':'Leave'})
@@ -157,9 +160,6 @@ func _execute() -> void:
 				var character_name_text := dialogic.Text.get_character_name_parsed(character)
 				dialogic.History.store_simple_history_entry(character_name_text+" left", event_name, {'character': character_name_text, 'mode':'Leave'})
 
-			if dialogic.loading_active:
-				await dialogic.dialogic_resumed
-
 			await dialogic.Portraits.leave_character(
 				character,
 				animation_name,
@@ -169,6 +169,9 @@ func _execute() -> void:
 
 	# UPDATE -------------------------------------
 	elif action == Actions.UPDATE:
+		if dialogic.loading_active:
+			await dialogic.dialogic_resumed
+
 		if not character or not dialogic.Portraits.is_character_joined(character):
 			finish()
 			return
