@@ -54,6 +54,28 @@ func clear_game_state(clear_flag:=Dialogic.ClearFlags.FULL_CLEAR) -> void:
 	voice_player.stream = null
 
 
+func load_game_state(load_flag:=LoadFlags.FULL_LOAD) -> void:
+	if load_flag == LoadFlags.ONLY_DNODES:
+		return
+
+	if dialogic.current_state_info.has("current_voice_line"):
+		set_file(dialogic.current_state_info["current_voice_line"])
+		if is_voiced(dialogic.current_state_info["current_event_idx"]):
+			await play_voice()
+
+			await get_tree().process_frame
+
+			if dialogic.paused:
+				await dialogic.dialogic_resumed
+
+			if not disable_mouthflaps:
+				for character: DialogicCharacter in dialogic.Portraits.get_joined_characters():
+					var node = dialogic.current_state_info["portraits"][character.resource_path]["node"]
+					if node.name == dialogic.current_state_info["speaker"]:
+						node.get_child(0)._on_voiceline_started({})
+						break
+
+
 ## Stops the current voice from playing.
 func pause() -> void:
 	voice_player.stream_paused = true
@@ -112,6 +134,7 @@ func set_file(path: String) -> void:
 		return
 
 	current_audio_file = path
+	dialogic.current_state_info['current_voice_line'] = current_audio_file
 	var audio: AudioStream = load(path)
 	voice_player.stream = audio
 
