@@ -157,6 +157,9 @@ func _execute() -> void:
 				var character_name_text := dialogic.Text.get_character_name_parsed(character)
 				dialogic.History.store_simple_history_entry(character_name_text+" left", event_name, {'character': character_name_text, 'mode':'Leave'})
 
+			if dialogic.loading_active:
+				await dialogic.dialogic_resumed
+
 			await dialogic.Portraits.leave_character(
 				character,
 				animation_name,

@@ -615,7 +615,7 @@ func leave_character(character: DialogicCharacter, animation_name:= "", animatio
 
 	if not animation_name.is_empty():
 		var character_node := get_character_node(character)
-		if not character_node:
+		if not character_node or not is_instance_valid(character_node):
 			remove_character(character)
 			return
 
