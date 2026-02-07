@@ -87,6 +87,8 @@ func load_game_state(load_flag:=LoadFlags.FULL_LOAD) -> void:
 			await voiceline_finished
 
 			dialogic.Inputs.auto_advance.enabled_forced = true
+	else:
+		dialogic.current_state_info["current_voice_settings"] = {}
 
 
 ## Stops the current voice from playing.
@@ -114,6 +116,9 @@ func _ready() -> void:
 
 	finish_timer.one_shot = true
 	finish_timer.timeout.connect(_on_voice_finished)
+	
+	if not dialogic.current_state_info.has("current_voice_settings"):
+		dialogic.current_state_info["current_voice_settings"] = {}
 
 
 ## Whether the current event is a text event and has a voice
