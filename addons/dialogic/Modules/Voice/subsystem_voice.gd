@@ -86,9 +86,10 @@ func load_game_state(load_flag:=LoadFlags.FULL_LOAD) -> void:
 
 			await voiceline_finished
 
-			dialogic.Inputs.auto_advance.enabled_forced = true
 	else:
 		dialogic.current_state_info["current_voice_settings"] = {}
+
+	dialogic.Inputs.auto_advance.enabled_forced = true
 
 
 ## Stops the current voice from playing.
